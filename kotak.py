@@ -4,28 +4,40 @@ from OpenGL.GLU import *
 
 rotate_y = 0
 rotate_x = 0
+buka = 0
+sudut = 0
 
 
 def kanan():
+
     # Blue side - TOP
+
+    glTranslatef(-0.5, 0.5, 0.0)  # Not included
+    glRotatef(sudut, 0.0, 0.0, 1.0)
     glBegin(GL_POLYGON)
     glColor3f(0.0, 0.0, 1.0)
-    glVertex3f(0, 0.5, 0.5)
-    glVertex3f(0, 0.5, -0.5)
-    glVertex3f(-0.5, 0.5, -0.5)
-    glVertex3f(-0.5, 0.5, 0.5)
+    glVertex3f(0, 0.0, 0.5)
+    glVertex3f(0, 0.0, -0.5)
+    glVertex3f(0.5, 0.0, -0.5)
+    glVertex3f(0.5, 0.0, 0.5)
     glEnd()
+    glRotatef(-sudut, 0.0, 0.0, 1.0)
+    glTranslatef(0.5, -0.5, 0.0)  # Not included
 
 
 def kiri():
-    # Blue side - TOP
+    # Green side - TOP
+    glTranslatef(0.5, 0.5, 0.0)  # Not included
+    glRotatef(-sudut, 0.0, 0.0, 1.0)
     glBegin(GL_POLYGON)
     glColor3f(0.0, 1.0, 0.0)
-    glVertex3f(0.5, 0.5, 0.5)
-    glVertex3f(0.5, 0.5, -0.5)
-    glVertex3f(-0, 0.5, -0.5)
-    glVertex3f(-0, 0.5, 0.5)
+    glVertex3f(0.0, 0.0, 0.5)
+    glVertex3f(0.0, 0.0, -0.5)
+    glVertex3f(-0.5, 0.0, -0.5)
+    glVertex3f(-0.5, 0.0, 0.5)
     glEnd()
+    glRotatef(sudut, 0.0, 0.0, 1.0)
+    glTranslatef(-0.5, -0.5, 0.0)  # Not included
 
 
 def display():
@@ -128,6 +140,23 @@ def specialKeys(key, x, y):
     glutPostRedisplay()
 
 
+def mouse(button, state, x, y):
+    global buka
+    global sudut
+    if button == GLUT_LEFT_BUTTON and state == GLUT_DOWN and buka == 0:
+        buka += 1
+        print("ngeklik")
+        glutTimerFunc(1, timer, 0)
+
+
+def timer(value):
+    global sudut
+    sudut += 1
+    glutPostRedisplay()
+    if sudut < 120:
+        glutTimerFunc(10, timer, 0)
+
+
 def main():
     glutInit()
 
@@ -143,8 +172,10 @@ def main():
     # Callback functions
     glutDisplayFunc(display)
     glutSpecialFunc(specialKeys)
+    glutMouseFunc(mouse)
 
     # Pass control to GLUT for events
     glutMainLoop()
+
 
 main()
