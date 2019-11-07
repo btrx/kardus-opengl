@@ -7,6 +7,53 @@ rotate_x = 0
 buka = 0
 sudut = 0
 
+def frame():
+    # kiri
+    glLineWidth(1.0)
+    glBegin(GL_LINE_LOOP)
+    glColor3f(1,1,1)
+    glVertex3f(-0.5,-0.5,-0.5)
+    glVertex3f(-0.5,-0.5, 0.5)
+    glVertex3f(-0.5, 0.5, 0.5)
+    glVertex3f(-0.5, 0.5,-0.5)
+    glEnd()
+    # kanan
+    glBegin(GL_LINE_LOOP)
+    glVertex3f( 0.5,-0.5,-0.5)
+    glVertex3f( 0.5,-0.5, 0.5)
+    glVertex3f( 0.5, 0.5, 0.5)
+    glVertex3f( 0.5, 0.5,-0.5)
+    glEnd()
+    # sisa rusuk
+    glBegin(GL_LINES)
+    glVertex3f(-0.5,-0.5,-0.5)
+    glVertex3f( 0.5,-0.5,-0.5)
+    glVertex3f(-0.5,-0.5, 0.5)
+    glVertex3f( 0.5,-0.5, 0.5)
+    glVertex3f(-0.5, 0.5, 0.5)
+    glVertex3f( 0.5, 0.5, 0.5)
+    glVertex3f(-0.5, 0.5,-0.5)
+    glVertex3f( 0.5, 0.5,-0.5)
+    glEnd()
+
+    glLineWidth(1.25)
+    glBegin(GL_LINE_LOOP)
+    glVertex3f(-0.49,-0.49,-0.49)
+    glVertex3f(-0.49,-0.49, 0.49)
+    glVertex3f( 0.49,-0.49, 0.49)
+    glVertex3f( 0.49,-0.49,-0.49)
+    glEnd()
+
+    glBegin(GL_LINES)
+    glVertex3f(-0.49,-0.49,-0.49)
+    glVertex3f(-0.49, 0.49,-0.49)
+    glVertex3f(-0.49,-0.49, 0.49)
+    glVertex3f(-0.49, 0.49, 0.49)
+    glVertex3f( 0.49,-0.49, 0.49)
+    glVertex3f( 0.49, 0.49, 0.49)
+    glVertex3f( 0.49,-0.49,-0.49)
+    glVertex3f( 0.49, 0.49,-0.49)
+    glEnd()    
 
 def kanan():
 
@@ -118,6 +165,7 @@ def display():
     glEnd()
     kanan()
     kiri()
+    frame()
     glFlush()
     glutSwapBuffers()
 
