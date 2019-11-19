@@ -6,6 +6,97 @@ rotate_y = 0
 rotate_x = 0
 buka = 0
 sudut = 0
+naik = 0
+spin = 0
+speed = 0
+rev = 0
+
+
+def inside():
+    
+    glTranslatef(0.0, naik, 0.0)  # Not included
+    glRotatef(spin, 0.0, 1.0, 0.0)
+    # Front
+    glBegin(GL_POLYGON)
+    glColor3f(0.75, 0.75, 0.75)
+    glVertex3f(0.1, -0.1, -0.1)
+    glVertex3f(0.1, 0.1, -0.1)
+    glVertex3f(-0.1, 0.1, -0.1)
+    glVertex3f(-0.1, -0.1, -0.1)
+    glEnd()
+
+    # BACK
+    glBegin(GL_POLYGON)
+    glVertex3f(0.1, -0.1, 0.1)
+    glVertex3f(0.1, 0.1, 0.1)
+    glVertex3f(-0.1, 0.1, 0.1)
+    glVertex3f(-0.1, -0.1, 0.1)
+    glEnd()
+
+    # RIGHT
+    glBegin(GL_POLYGON)
+    glVertex3f(0.1, -0.1, -0.1)
+    glVertex3f(0.1, 0.1, -0.1)
+    glVertex3f(0.1, 0.1, 0.1)
+    glVertex3f(0.1, -0.1, 0.1)
+    glEnd()
+
+    # LEFT
+    glBegin(GL_POLYGON)
+    glVertex3f(-0.1, -0.1, 0.1)
+    glVertex3f(-0.1, 0.1, 0.1)
+    glVertex3f(-0.1, 0.1, -0.1)
+    glVertex3f(-0.1, -0.1, -0.1)
+    glEnd()
+
+    # TOP
+    glBegin(GL_POLYGON)
+    glVertex3f(  0.1,  0.1,  0.1 )
+    glVertex3f(  0.1,  0.1, -0.1 )
+    glVertex3f( -0.1,  0.1, -0.1 )
+    glVertex3f( -0.1,  0.1,  0.1 )
+    glEnd()
+
+    # BOTTOM
+    glBegin(GL_POLYGON)
+    glVertex3f(0.1, -0.1, -0.1)
+    glVertex3f(0.1, -0.1, 0.1)
+    glVertex3f(-0.1, -0.1, 0.1)
+    glVertex3f(-0.1, -0.1, -0.1)
+    glEnd()
+    
+    glRotatef(-sudut, 0.0, 1.0, 0.0)
+    glTranslatef(0.0, -naik, 0.0)  # Not included
+
+
+def kanan():
+    # Blue side - TOP
+    glTranslatef(-0.5, 0.5, 0.0)  # Not included
+    glRotatef(sudut, 0.0, 0.0, 1.0)
+    glBegin(GL_POLYGON)
+    glColor3f(0.0, 0.0, 1.0)
+    glVertex3f(0, 0.0, 0.5)
+    glVertex3f(0, 0.0, -0.5)
+    glVertex3f(0.5, 0.0, -0.5)
+    glVertex3f(0.5, 0.0, 0.5)
+    glEnd()
+    glRotatef(-sudut, 0.0, 0.0, 1.0)
+    glTranslatef(0.5, -0.5, 0.0)  # Not included
+
+
+def kiri():
+    # Green side - TOP
+    glTranslatef(0.5, 0.5, 0.0)  # Not included
+    glRotatef(-sudut, 0.0, 0.0, 1.0)
+    glBegin(GL_POLYGON)
+    glColor3f(0.0, 1.0, 0.0)
+    glVertex3f(0.0, 0.0, 0.5)
+    glVertex3f(0.0, 0.0, -0.5)
+    glVertex3f(-0.5, 0.0, -0.5)
+    glVertex3f(-0.5, 0.0, 0.5)
+    glEnd()
+    glRotatef(sudut, 0.0, 0.0, 1.0)
+    glTranslatef(-0.5, -0.5, 0.0)  # Not included    
 
 def frame():
     # kiri
@@ -54,38 +145,6 @@ def frame():
     glVertex3f( 0.49,-0.49,-0.49)
     glVertex3f( 0.49, 0.49,-0.49)
     glEnd()    
-
-def kanan():
-
-    # Blue side - TOP
-
-    glTranslatef(-0.5, 0.5, 0.0)  # Not included
-    glRotatef(sudut, 0.0, 0.0, 1.0)
-    glBegin(GL_POLYGON)
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex3f(0, 0.0, 0.5)
-    glVertex3f(0, 0.0, -0.5)
-    glVertex3f(0.5, 0.0, -0.5)
-    glVertex3f(0.5, 0.0, 0.5)
-    glEnd()
-    glRotatef(-sudut, 0.0, 0.0, 1.0)
-    glTranslatef(0.5, -0.5, 0.0)  # Not included
-
-
-def kiri():
-    # Green side - TOP
-    glTranslatef(0.5, 0.5, 0.0)  # Not included
-    glRotatef(-sudut, 0.0, 0.0, 1.0)
-    glBegin(GL_POLYGON)
-    glColor3f(0.0, 1.0, 0.0)
-    glVertex3f(0.0, 0.0, 0.5)
-    glVertex3f(0.0, 0.0, -0.5)
-    glVertex3f(-0.5, 0.0, -0.5)
-    glVertex3f(-0.5, 0.0, 0.5)
-    glEnd()
-    glRotatef(sudut, 0.0, 0.0, 1.0)
-    glTranslatef(-0.5, -0.5, 0.0)  # Not included
-
 
 def display():
     # Clear screen and Z-buffer
@@ -163,9 +222,12 @@ def display():
     glVertex3f(-0.5, -0.5, 0.5)
     glVertex3f(-0.5, -0.5, -0.5)
     glEnd()
+
     kanan()
     kiri()
     frame()
+    inside()
+
     glFlush()
     glutSwapBuffers()
 
@@ -189,6 +251,7 @@ def specialKeys(key, x, y):
 
 
 def mouse(button, state, x, y):
+
     global buka
     global sudut
     if button == GLUT_LEFT_BUTTON and state == GLUT_DOWN and buka == 0:
@@ -198,14 +261,33 @@ def mouse(button, state, x, y):
 
 
 def timer(value):
-    global sudut
-    sudut += 1
+
     glutPostRedisplay()
+    global sudut
+    global naik
+    global speed
+    global speed
     if sudut < 120:
-        glutTimerFunc(10, timer, 0)
+        sudut += 1
+    elif sudut == 120 and naik < 0.75:
+        naik += 0.00625
+        if naik > 0.74:
+            speed = 1
+    else:
+        global spin
+        global rev
+        spin += speed
+        if speed < 5:
+            rev += 1/120
+            if rev > 1:
+                speed += 1
+                rev = 0
+
+    glutTimerFunc(16, timer, 0)
 
 
 def main():
+
     glutInit()
 
     # Request double buffered true color window with Z-buffer
