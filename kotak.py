@@ -2,149 +2,247 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-rotate_y = 0
-rotate_x = 0
-buka = 0
-sudut = 0
-naik = 0
-spin = 0
-speed = 0
-rev = 0
+rotateX, rotateY, box, boxposY, rotatelid, openstat = 0, 0, 0, 0, 0, 0
+boxlength = 0.5
 
+def drawbox(length, stat = 0):
 
-def inside():
-    
-    glTranslatef(0.0, naik, 0.0)  # Not included
-    glRotatef(spin, 0.0, 1.0, 0.0)
-    # Front
+    glPushMatrix()
+    # Other Transformations
+    if stat == openstat:
+        glTranslatef( 0.0, -boxposY, 0.0 )     # Not included
+        # glRotatef( 180, 0.0, 1.0, 0.0 )   # Not included
+        # glScalef( 2.0, 2.0, 0.0 )         # Not included
+
+    # FRONT
     glBegin(GL_POLYGON)
-    glColor3f(0.75, 0.75, 0.75)
-    glVertex3f(0.1, -0.1, -0.1)
-    glVertex3f(0.1, 0.1, -0.1)
-    glVertex3f(-0.1, 0.1, -0.1)
-    glVertex3f(-0.1, -0.1, -0.1)
+    glColor3f(0.76, 0.56, 0.16)
+    glVertex3f( length,-length,-length)
+    glVertex3f( length, length,-length)
+    glVertex3f(-length, length,-length)
+    glVertex3f(-length,-length,-length)
     glEnd()
 
     # BACK
     glBegin(GL_POLYGON)
-    glVertex3f(0.1, -0.1, 0.1)
-    glVertex3f(0.1, 0.1, 0.1)
-    glVertex3f(-0.1, 0.1, 0.1)
-    glVertex3f(-0.1, -0.1, 0.1)
+    glVertex3f( length,-length, length)
+    glVertex3f( length, length, length)
+    glVertex3f(-length, length, length)
+    glVertex3f(-length,-length, length)
     glEnd()
 
     # RIGHT
     glBegin(GL_POLYGON)
-    glVertex3f(0.1, -0.1, -0.1)
-    glVertex3f(0.1, 0.1, -0.1)
-    glVertex3f(0.1, 0.1, 0.1)
-    glVertex3f(0.1, -0.1, 0.1)
+    glVertex3f( length,-length,-length)
+    glVertex3f( length, length,-length)
+    glVertex3f( length, length, length)
+    glVertex3f( length,-length, length)
     glEnd()
 
     # LEFT
     glBegin(GL_POLYGON)
-    glVertex3f(-0.1, -0.1, 0.1)
-    glVertex3f(-0.1, 0.1, 0.1)
-    glVertex3f(-0.1, 0.1, -0.1)
-    glVertex3f(-0.1, -0.1, -0.1)
+    glVertex3f(-length,-length, length)
+    glVertex3f(-length, length, length)
+    glVertex3f(-length, length,-length)
+    glVertex3f(-length,-length,-length)
     glEnd()
 
     # TOP
-    glBegin(GL_POLYGON)
-    glVertex3f(  0.1,  0.1,  0.1 )
-    glVertex3f(  0.1,  0.1, -0.1 )
-    glVertex3f( -0.1,  0.1, -0.1 )
-    glVertex3f( -0.1,  0.1,  0.1 )
-    glEnd()
+    # glBegin(GL_POLYGON)
+    # glVertex3f( length, length,  length)
+    # glVertex3f( length, length, -length)
+    # glVertex3f(-length, length, -length)
+    # glVertex3f(-length, length,  length)
+    # glEnd()
 
     # BOTTOM
     glBegin(GL_POLYGON)
-    glVertex3f(0.1, -0.1, -0.1)
-    glVertex3f(0.1, -0.1, 0.1)
-    glVertex3f(-0.1, -0.1, 0.1)
-    glVertex3f(-0.1, -0.1, -0.1)
+    glVertex3f( length,-length,-length)
+    glVertex3f( length,-length, length)
+    glVertex3f(-length,-length, length)
+    glVertex3f(-length,-length,-length)
     glEnd()
-    
-    glRotatef(-sudut, 0.0, 1.0, 0.0)
-    glTranslatef(0.0, -naik, 0.0)  # Not included
+
+    # draw the lid
+    if stat == 1:
+        lidstat = 1
+    else:
+        lidstat = 0
+    lid(length, lidstat)
+
+    # draw outer edge - inner edge
+    boxedge(length)
+    boxedge(length-0.005)
+
+    glPopMatrix()
 
 
-def kanan():
-    # Blue side - TOP
-    glTranslatef(-0.5, 0.5, 0.0)  # Not included
-    glRotatef(sudut, 0.0, 0.0, 1.0)
-    glBegin(GL_POLYGON)
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex3f(0, 0.0, 0.5)
-    glVertex3f(0, 0.0, -0.5)
-    glVertex3f(0.5, 0.0, -0.5)
-    glVertex3f(0.5, 0.0, 0.5)
-    glEnd()
-    glRotatef(-sudut, 0.0, 0.0, 1.0)
-    glTranslatef(0.5, -0.5, 0.0)  # Not included
+def boxedge(l):
 
+    glLineWidth(2)
 
-def kiri():
-    # Green side - TOP
-    glTranslatef(0.5, 0.5, 0.0)  # Not included
-    glRotatef(-sudut, 0.0, 0.0, 1.0)
-    glBegin(GL_POLYGON)
-    glColor3f(0.0, 1.0, 0.0)
-    glVertex3f(0.0, 0.0, 0.5)
-    glVertex3f(0.0, 0.0, -0.5)
-    glVertex3f(-0.5, 0.0, -0.5)
-    glVertex3f(-0.5, 0.0, 0.5)
-    glEnd()
-    glRotatef(sudut, 0.0, 0.0, 1.0)
-    glTranslatef(-0.5, -0.5, 0.0)  # Not included    
-
-def frame():
-    # kiri
-    glLineWidth(1.0)
+    # bottom
     glBegin(GL_LINE_LOOP)
     glColor3f(1,1,1)
-    glVertex3f(-0.5,-0.5,-0.5)
-    glVertex3f(-0.5,-0.5, 0.5)
-    glVertex3f(-0.5, 0.5, 0.5)
-    glVertex3f(-0.5, 0.5,-0.5)
-    glEnd()
-    # kanan
-    glBegin(GL_LINE_LOOP)
-    glVertex3f( 0.5,-0.5,-0.5)
-    glVertex3f( 0.5,-0.5, 0.5)
-    glVertex3f( 0.5, 0.5, 0.5)
-    glVertex3f( 0.5, 0.5,-0.5)
-    glEnd()
-    # sisa rusuk
-    glBegin(GL_LINES)
-    glVertex3f(-0.5,-0.5,-0.5)
-    glVertex3f( 0.5,-0.5,-0.5)
-    glVertex3f(-0.5,-0.5, 0.5)
-    glVertex3f( 0.5,-0.5, 0.5)
-    glVertex3f(-0.5, 0.5, 0.5)
-    glVertex3f( 0.5, 0.5, 0.5)
-    glVertex3f(-0.5, 0.5,-0.5)
-    glVertex3f( 0.5, 0.5,-0.5)
+    glVertex3f(-l,-l,-l)
+    glVertex3f(-l,-l, l)
+    glVertex3f( l,-l, l)
+    glVertex3f( l,-l,-l)
     glEnd()
 
-    glLineWidth(1.25)
-    glBegin(GL_LINE_LOOP)
-    glVertex3f(-0.49,-0.49,-0.49)
-    glVertex3f(-0.49,-0.49, 0.49)
-    glVertex3f( 0.49,-0.49, 0.49)
-    glVertex3f( 0.49,-0.49,-0.49)
+    # side
+    glBegin(GL_LINES)
+    glVertex3f(-l,-l,-l)
+    glVertex3f(-l, l,-l)
+    glVertex3f(-l,-l, l)
+    glVertex3f(-l, l, l)
+    glVertex3f( l,-l, l)
+    glVertex3f( l, l, l)
+    glVertex3f( l,-l,-l)
+    glVertex3f( l, l,-l)
     glEnd()
 
-    glBegin(GL_LINES)
-    glVertex3f(-0.49,-0.49,-0.49)
-    glVertex3f(-0.49, 0.49,-0.49)
-    glVertex3f(-0.49,-0.49, 0.49)
-    glVertex3f(-0.49, 0.49, 0.49)
-    glVertex3f( 0.49,-0.49, 0.49)
-    glVertex3f( 0.49, 0.49, 0.49)
-    glVertex3f( 0.49,-0.49,-0.49)
-    glVertex3f( 0.49, 0.49,-0.49)
-    glEnd()    
+    if boxlength == l:
+        glBegin(GL_LINE_LOOP)
+        glVertex3f(-l, l,-l)
+        glVertex3f(-l, l, l)
+        glVertex3f( l, l, l)
+        glVertex3f( l, l,-l)
+        glEnd()
+
+
+def lid(length, stat):
+    
+    global rotatelid
+
+    # left side
+    glPushMatrix()
+    glTranslatef(-length, length, 0.0)  # Not included
+    if stat == 0:
+        glRotatef(rotatelid, 0.0, 0.0, 1.0)
+
+    # draw face
+    glBegin(GL_POLYGON)
+    glColor3f(0.0, 0.0, 1.0)
+    glVertex3f(0, 0.0, length)
+    glVertex3f(0, 0.0,-length)
+    glVertex3f(length, 0.0,-length)
+    glVertex3f(length, 0.0, length)
+    glEnd()
+
+    # draw edges
+    glBegin(GL_LINE_STRIP)
+    glColor3f(1.0,1.0,1.0)
+    glVertex3f(0.0, 0.0, length)
+    glVertex3f(length, 0.0, length)
+    glVertex3f(length, 0.0,-length)
+    glVertex3f(0.0, 0.0,-length)
+    glEnd()
+    glPopMatrix()
+
+    # right side
+    glPushMatrix()
+    glTranslatef(length, length, 0.0)  # Not included
+    if stat == 0:
+        glRotatef(-rotatelid, 0.0, 0.0, 1.0)
+
+    # draw face
+    glBegin(GL_POLYGON)
+    glColor3f(0.0, 1.0, 0.0)
+    glVertex3f(0, 0.0, length)
+    glVertex3f(0, 0.0,-length)
+    glVertex3f(-length, 0.0,-length)
+    glVertex3f(-length, 0.0, length)
+    glEnd()
+
+    # draw edges
+    glBegin(GL_LINE_STRIP)
+    glColor3f(1.0,1.0,1.0)
+    glVertex3f(0.0, 0.0, length)
+    glVertex3f(-length, 0.0, length)
+    glVertex3f(-length, 0.0,-length)
+    glVertex3f(0.0, 0.0,-length)
+    glEnd()
+    glPopMatrix()
+
+
+def orient():
+    # Rotate when user changes rotateX and rotateY
+    glRotatef(rotateX, 1.0, 0.0, 0.0)
+    glRotatef(rotateY, 0.0, 1.0, 0.0)
+
+
+def specialKeys(key, x, y):
+
+    global rotateX
+    global rotateY
+    # Right arrow - increase rotation by 5 degree
+    if key == GLUT_KEY_RIGHT:
+        rotateY += 5
+    elif key == GLUT_KEY_LEFT:
+        rotateY -= 5
+    if key == GLUT_KEY_UP:
+        rotateX += 5
+    elif key == GLUT_KEY_DOWN:
+        rotateX -= 5
+
+    # Request display update
+    glutPostRedisplay()
+
+
+def keyboardKeys(key, x, y):
+
+    ch = key.decode("utf-8")
+    print(type(key), key, type(ch), ch)
+    global openstat
+    global box
+    if key.decode() == ' ':
+        if openstat == 0 and boxposY == 0:
+            openstat = 1
+            box += 1
+            glutTimerFunc(1, openbox, 0)
+            print("space")
+        elif openstat == 1 and rotatelid == 120 and box < 5:
+            openstat = 0
+            glutTimerFunc(1, dropbox, 0)
+            print("down")
+
+
+def openbox(value):
+    
+    global rotatelid
+    global openstat
+    if rotatelid < 120:
+        rotatelid += 1
+        drawbox(boxlength-0.1)
+        glutPostRedisplay()
+        glutTimerFunc(16, openbox, 0)
+    else:
+        openstat = 1
+        drawbox(boxlength-0.1)
+        glutPostRedisplay()
+
+
+def dropbox(value):
+
+    global openstat
+    global boxposY
+    global rotatelid
+    global boxlength
+    global box
+    if boxposY < 2.5:
+        boxposY += 0.015
+        drawbox(boxlength-0.1)
+        glutPostRedisplay()
+        glutTimerFunc(16, dropbox, 0)
+    else:
+        if openstat:
+            box += 1
+        openstat, rotatelid, boxposY = 0, 0, 0
+        if box < 5:
+            boxlength -= 0.1
+        glutPostRedisplay()
+
 
 def display():
     # Clear screen and Z-buffer
@@ -153,137 +251,18 @@ def display():
     # Reset transformations
     glLoadIdentity()
 
-    # Other Transformations
-    # glTranslatef( 0.1, 0.0, 0.0 )     #  Not included
-    # glRotatef( 180, 0.0, 1.0, 0.0 )   #  Not included
-
-    # Rotate when user changes rotate_x and rotate_y
-    glRotatef(rotate_x, 1.0, 0.0, 0.0)
-    glRotatef(rotate_y, 0.0, 1.0, 0.0)
-
-    # Other Transformations
-    # glScalef( 2.0, 2.0, 0.0 )          # Not included
-
-    # Multi-colored side - FRONT
-    glBegin(GL_POLYGON)
-
-    glColor3f(0.76, 0.56, 0.16)
-    glVertex3f(0.5, -0.5, -0.5)      # P1 is red
-    # glColor3f( 0.0, 1.0, 0.0 )
-    glVertex3f(0.5, 0.5, -0.5)      # P2 is green
-    # glColor3f( 0.0, 0.0, 1.0 )
-    glVertex3f(-0.5, 0.5, -0.5)      # P3 is blue
-    # glColor3f( 1.0, 0.0, 1.0 )
-    glVertex3f(-0.5, -0.5, -0.5)      # P4 is purple
-
-    glEnd()
-
-    # White side - BACK
-    glBegin(GL_POLYGON)
-    # glColor3f(   1.0,  1.0, 1.0 )
-    glVertex3f(0.5, -0.5, 0.5)
-    glVertex3f(0.5, 0.5, 0.5)
-    glVertex3f(-0.5, 0.5, 0.5)
-    glVertex3f(-0.5, -0.5, 0.5)
-    glEnd()
-
-    # Purple side - RIGHT
-    glBegin(GL_POLYGON)
-    # glColor3f(  1.0,  0.0,  1.0 )
-    glVertex3f(0.5, -0.5, -0.5)
-    glVertex3f(0.5, 0.5, -0.5)
-    glVertex3f(0.5, 0.5, 0.5)
-    glVertex3f(0.5, -0.5, 0.5)
-    glEnd()
-
-    # Green side - LEFT
-    glBegin(GL_POLYGON)
-    # glColor3f(   0.0,  1.0,  0.0 )
-    glVertex3f(-0.5, -0.5, 0.5)
-    glVertex3f(-0.5, 0.5, 0.5)
-    glVertex3f(-0.5, 0.5, -0.5)
-    glVertex3f(-0.5, -0.5, -0.5)
-    glEnd()
-
-    # # Blue side - TOP
-    # glBegin(GL_POLYGON)
-    # glColor3f(   0.0,  0.0,  1.0 )
-    # glVertex3f(  0.5,  0.5,  0.5 )
-    # glVertex3f(  0.5,  0.5, -0.5 )
-    # glVertex3f( -0.5,  0.5, -0.5 )
-    # glVertex3f( -0.5,  0.5,  0.5 )
-    # glEnd()
-
-    # Red side - BOTTOM
-    glBegin(GL_POLYGON)
-    # glColor3f(   1.0,  0.0,  0.0 )
-    glVertex3f(0.5, -0.5, -0.5)
-    glVertex3f(0.5, -0.5, 0.5)
-    glVertex3f(-0.5, -0.5, 0.5)
-    glVertex3f(-0.5, -0.5, -0.5)
-    glEnd()
-
-    kanan()
-    kiri()
-    frame()
-    inside()
+    # Buffer drawing here
+    orient()
+    if box < 5:
+        drawbox(boxlength)
+        drawbox(boxlength-0.1, 1)
+    else:
+        drawbox(boxlength)
+    # End drawing
 
     glFlush()
     glutSwapBuffers()
 
-
-def specialKeys(key, x, y):
-
-    global rotate_x
-    global rotate_y
-    # Right arrow - increase rotation by 5 degree
-    if key == GLUT_KEY_RIGHT:
-        rotate_y += 5
-    elif key == GLUT_KEY_LEFT:
-        rotate_y -= 5
-    elif key == GLUT_KEY_UP:
-        rotate_x += 5
-    elif key == GLUT_KEY_DOWN:
-        rotate_x -= 5
-
-    # Request display update
-    glutPostRedisplay()
-
-
-def mouse(button, state, x, y):
-
-    global buka
-    global sudut
-    if button == GLUT_LEFT_BUTTON and state == GLUT_DOWN and buka == 0:
-        buka += 1
-        print("ngeklik")
-        glutTimerFunc(1, timer, 0)
-
-
-def timer(value):
-
-    glutPostRedisplay()
-    global sudut
-    global naik
-    global speed
-    global speed
-    if sudut < 120:
-        sudut += 1
-    elif sudut == 120 and naik < 0.75:
-        naik += 0.00625
-        if naik > 0.74:
-            speed = 1
-    else:
-        global spin
-        global rev
-        spin += speed
-        if speed < 5:
-            rev += 1/120
-            if rev > 1:
-                speed += 1
-                rev = 0
-
-    glutTimerFunc(16, timer, 0)
 
 
 def main():
@@ -301,8 +280,8 @@ def main():
 
     # Callback functions
     glutDisplayFunc(display)
+    glutKeyboardFunc(keyboardKeys)
     glutSpecialFunc(specialKeys)
-    glutMouseFunc(mouse)
 
     # Pass control to GLUT for events
     glutMainLoop()
